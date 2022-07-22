@@ -1,0 +1,28 @@
+{
+    "name": "tapat4n/fork",
+    "description": "Fork manager for php",
+    "keywords": [
+        "fork",
+        "library",
+        "process",
+        "thread",
+        "php"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Tapat4n\\Fork\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "tapat4n",
+            "email": "volansky.sasha@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=8.1"
+    }
+}
