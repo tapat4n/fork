@@ -34,9 +34,7 @@ final class ShmopMessage implements MessageInterface
 
     public function remove(): bool
     {
-        $deleted = $this->handler->delete();
-        $this->handler->close();
-        return $deleted;
+        return $this->handler->delete() && $this->handler->close();
     }
 
     /**
