@@ -13,6 +13,8 @@ final class ShmopMessage implements MessageInterface
 
     private int $key;
 
+    private int $status = 0;
+
     /**
      * @throws Exception
      */
@@ -43,5 +45,10 @@ final class ShmopMessage implements MessageInterface
     private function generateKey(): void
     {
         $this->key = random_int(0, PHP_INT_MAX);
+    }
+
+    public function setStatus(int $status): void
+    {
+        $this->status = $status;
     }
 }

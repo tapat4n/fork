@@ -2,8 +2,8 @@
 
 namespace Tapat4n\Fork\Handlers;
 
+use RuntimeException;
 use Shmop;
-use Exception;
 
 final class ShmopHandler implements HandlerInterface
 {
@@ -23,13 +23,16 @@ final class ShmopHandler implements HandlerInterface
      */
     public function __construct(int $key, int $size, int $perms = self::DEFAULT_PERMISSION)
     {
+        if (!extension_loaded('shmop')) {
+            throw new RuntimeException('Exctension `shmop` not loaded in php.ini');
+        }
         if ($this->handlerOpened($key)) {
             $this->shared_memory_key = shmop_open($key, self::SHARED_MEMORY_READ_WRITE, $perms, $size);
         } else {
             $this->shared_memory_key = shmop_open($key, self::SHARED_MEMORY_CREATE, $perms, $size);
         }
         if (!$this->shared_memory_key) {
-            throw new Exception('Can`t open shared memeory');
+            throw new RuntimeException('Can`t open shared memeory');
         }
     }
 
