@@ -29,19 +29,6 @@ final class Fork
         }
         $this->messageClass = $messageClass;
         $this->waitAfterRun = $waitAfterRun;
-        $h = new SigHandler();
-        $h->registerWithCallback(SIGTERM, function () {
-            echo 'TERM';
-        });
-        $h->registerWithCallback(SIGUSR1, function () {
-            echo 'SIGUSR1';
-        });
-        $h->registerWithCallback(SIGTSTP, function () {
-            echo 'SIGTSTP';
-        });
-        $h->registerWithCallback(SIGUSR2, function () {
-            echo 'SIGUSR2';
-        });
     }
 
     public function __destruct()
