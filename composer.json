@@ -6,7 +6,9 @@
         "library",
         "process",
         "thread",
-        "php"
+        "php",
+        "pcntl",
+        "shmop"
     ],
     "type": "library",
     "license": "MIT",
@@ -24,7 +26,9 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=8.1",
-        "ext-pcntl": "*",
-        "ext-shmop": "*"
+        "ext-pcntl": "*"
+    },
+    "suggest": {
+        "ext-shmop": "Required for shmop handler support"
     }
 }

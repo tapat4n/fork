@@ -6,8 +6,6 @@ use Tapat4n\Fork\Message\MessageInterface;
 use Tapat4n\Fork\Message\ShmopMessage;
 use RuntimeException;
 
-use const WUNTRACED;
-
 final class Fork
 {
     private bool $isParent = true;
@@ -19,12 +17,17 @@ final class Fork
 
     private string $messageClass;
 
-    public function __construct(string $messageClass = ShmopMessage::class)
-    {
+    private bool $waitAfterRun;
+
+    public function __construct(
+        bool $waitAfterRun = true,
+        string $messageClass = ShmopMessage::class
+    ) {
         if (!extension_loaded('pcntl')) {
             throw new RuntimeException('Exctension `pcntl` not loaded in php.ini');
         }
         $this->messageClass = $messageClass;
+        $this->waitAfterRun = $waitAfterRun;
     }
 
     public function __destruct()
@@ -73,7 +76,13 @@ final class Fork
         foreach ($this->processes as $process) {
             $process->run();
         }
+        if ($this->waitAfterRun) {
+            $this->wait();
+        }
+    }
 
+    public function wait(): void
+    {
         foreach ($this->processes as $process) {
             $process->wait();
         }

@@ -5,6 +5,14 @@ namespace Tapat4n\Fork\Handlers;
 use RuntimeException;
 use Shmop;
 
+use function extension_loaded;
+use function shmop_open;
+use function shmop_write;
+use function shmop_read;
+use function shmop_size;
+use function shmop_delete;
+use function trim;
+
 final class ShmopHandler implements HandlerInterface
 {
     private const DEFAULT_PERMISSION = 0644;
@@ -32,13 +40,13 @@ final class ShmopHandler implements HandlerInterface
             $this->shared_memory_key = shmop_open($key, self::SHARED_MEMORY_CREATE, $perms, $size);
         }
         if (!$this->shared_memory_key) {
-            throw new RuntimeException('Can`t open shared memeory');
+            throw new RuntimeException('Can`t open shared memory');
         }
     }
 
     public function handlerOpened(int $key): bool
     {
-        return (bool)@shmop_open($key, self::SHARED_MEMORY_READONLY, 0, 0);
+        return (bool)shmop_open($key, self::SHARED_MEMORY_READONLY, 0, 0);
     }
 
     public function write($data): bool

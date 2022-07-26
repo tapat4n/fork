@@ -9,6 +9,4 @@ interface MessageInterface
     public function get(): string;
 
     public function remove(): bool;
-
-    public function setStatus(int $status): void;
 }

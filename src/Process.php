@@ -5,6 +5,8 @@ namespace Tapat4n\Fork;
 use RuntimeException;
 use Tapat4n\Fork\Message\MessageInterface;
 
+use const WUNTRACED;
+
 final class Process
 {
     private MessageInterface $message;
@@ -63,7 +65,7 @@ final class Process
                 $this->worker->run($this->message);
             } catch (\Throwable $exception) {
                 $this->outputMessage->set(json_encode([$exception->getMessage(), $exception->getTraceAsString()], JSON_THROW_ON_ERROR));
-            } catch (\JsonException $e) {
+                exit(1);
             }
             exit(0);
         }
@@ -92,7 +94,7 @@ final class Process
         return $this->message->remove();
     }
 
-    private function createFromCallable($worker): WorkerInterface
+    private function createFromCallable(callable $worker): WorkerInterface
     {
         return new class($worker) implements WorkerInterface {
             private $worker;

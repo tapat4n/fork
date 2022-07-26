@@ -2,25 +2,21 @@
 
 namespace Tapat4n\Fork\Message;
 
-use Exception;
-use Tapat4n\Fork\Handlers\ShmopHandler;
+use Tapat4n\Fork\Handlers\FileHandler;
 use Tapat4n\Fork\KeyGenerator;
 
-final class ShmopMessage implements MessageInterface
+class FileMessage implements MessageInterface
 {
     public const SIZE = 1024;
 
-    private ShmopHandler $handler;
+    private FileHandler $handler;
 
     private int $key;
 
-    /**
-     * @throws Exception
-     */
     public function __construct()
     {
         $this->key = (new KeyGenerator())->generate();
-        $this->handler = new ShmopHandler($this->key, self::SIZE);
+        $this->handler = new FileHandler($this->key, self::SIZE);
     }
 
     public function set(string $msg): bool
