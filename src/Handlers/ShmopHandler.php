@@ -35,10 +35,11 @@ final class ShmopHandler implements HandlerInterface
             throw new RuntimeException('Exctension `shmop` not loaded in php.ini');
         }
         if ($this->handlerOpened($key)) {
-            $this->shared_memory_key = shmop_open($key, self::SHARED_MEMORY_READ_WRITE, $perms, $size);
+            $mode = self::SHARED_MEMORY_READ_WRITE;
         } else {
-            $this->shared_memory_key = shmop_open($key, self::SHARED_MEMORY_CREATE, $perms, $size);
+            $mode = self::SHARED_MEMORY_CREATE;
         }
+        $this->shared_memory_key = shmop_open($key, $mode, $perms, $size);
         if (!$this->shared_memory_key) {
             throw new RuntimeException('Can`t open shared memory');
         }

@@ -5,6 +5,7 @@ namespace Tapat4n\Fork;
 use Tapat4n\Fork\Message\FileMessage;
 use Tapat4n\Fork\Message\MessageInterface;
 use RuntimeException;
+use Tapat4n\Fork\Worker\WorkerInterface;
 
 final class Fork
 {
@@ -28,6 +29,19 @@ final class Fork
         }
         $this->messageClass = $messageClass;
         $this->waitAfterRun = $waitAfterRun;
+        $h = new SigHandler();
+        $h->registerWithCallback(SIGTERM, function () {
+            echo 'TERM';
+        });
+        $h->registerWithCallback(SIGUSR1, function () {
+            echo 'SIGUSR1';
+        });
+        $h->registerWithCallback(SIGTSTP, function () {
+            echo 'SIGTSTP';
+        });
+        $h->registerWithCallback(SIGUSR2, function () {
+            echo 'SIGUSR2';
+        });
     }
 
     public function __destruct()
@@ -57,7 +71,10 @@ final class Fork
     {
         $result = [];
         foreach ($this->processes as $process) {
-            $result[$process->getPid()] = $process->getOutput();
+            $pid = $process->getPid();
+            if ($pid !== null) {
+                $result[$pid] = $process->getOutput();
+            }
         }
         return $result;
     }
@@ -66,7 +83,10 @@ final class Fork
     {
         $messages = [];
         foreach ($this->processes as $process) {
-            $messages[$process->getPid()] = $process->getMessage();
+            $pid = $process->getPid();
+            if ($pid !== null) {
+                $messages[$pid] = $process->getMessage();
+            }
         }
         return $messages;
     }
@@ -90,6 +110,9 @@ final class Fork
 
     private function createMessage(): MessageInterface
     {
+        if (!class_exists($this->messageClass)) {
+            throw new RuntimeException('Class ' . $this->messageClass . ' not exists');
+        }
         $message = new $this->messageClass();
         if (!$message instanceof MessageInterface) {
             throw new RuntimeException('Property $messageClass must be instance of ' . MessageInterface::class);

@@ -4,6 +4,8 @@ namespace Tapat4n\Fork;
 
 use RuntimeException;
 use Tapat4n\Fork\Message\MessageInterface;
+use Tapat4n\Fork\Worker\WorkerInterface;
+use Tapat4n\Fork\Worker\CallbackWorker;
 
 use const WUNTRACED;
 
@@ -30,7 +32,7 @@ final class Process
         callable $afterFork
     ) {
         if (is_callable($worker)) {
-            $worker = $this->createFromCallable($worker);
+            $worker = new CallbackWorker($worker);
         }
         $this->worker = $worker;
         $this->message = $message;
@@ -92,22 +94,5 @@ final class Process
     public function clearMessage(): bool
     {
         return $this->message->remove();
-    }
-
-    private function createFromCallable(callable $worker): WorkerInterface
-    {
-        return new class($worker) implements WorkerInterface {
-            private $worker;
-
-            public function __construct(callable $worker)
-            {
-                $this->worker = $worker;
-            }
-
-            public function run(MessageInterface $message)
-            {
-                return call_user_func($this->worker, $message);
-            }
-        };
     }
 }

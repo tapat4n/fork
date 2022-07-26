@@ -13,11 +13,15 @@ use function is_resource;
 use function filesize;
 use function strlen;
 
-class FileHandler implements HandlerInterface
+final class FileHandler implements HandlerInterface
 {
     private int $key;
     private int $size;
 
+    /**
+     * @var resource
+     * @psalm-param closed-resource|resource
+     */
     private $stream;
 
     public function __construct(int $key, int $size)
@@ -25,6 +29,9 @@ class FileHandler implements HandlerInterface
         $this->key = $key;
         $this->size = $size;
         $this->stream = fopen($this->getPath(), 'w+b');
+        if (!$this->stream) {
+            throw new \RuntimeException('Can`t open stream for file');
+        }
     }
 
     public function handlerOpened(int $key): bool
@@ -54,9 +61,7 @@ class FileHandler implements HandlerInterface
 
     public function close(): bool
     {
-        if (is_resource($this->stream)) {
-            fclose($this->stream);
-        }
+        fclose($this->stream);
         return true;
     }
 

@@ -30,5 +30,9 @@
     },
     "suggest": {
         "ext-shmop": "Required for shmop handler support"
+    },
+    "require-dev": {
+        "vimeo/psalm": "5.x-dev",
+        "symfony/var-dumper": "6.2.x-dev"
     }
 }
