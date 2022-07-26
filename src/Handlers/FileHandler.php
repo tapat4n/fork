@@ -46,16 +46,19 @@ final class FileHandler implements HandlerInterface
 
     public function read(): string
     {
-        $size = filesize($this->getPath());
-        if ($size > 0) {
+        $fsize = filesize($this->getPath());
+        if ($fsize > 0) {
             fseek($this->stream, 0);
-            return fread($this->stream, filesize($this->getPath()));
+            return fread($this->stream, $fsize);
         }
         return '';
     }
 
     public function delete(): bool
     {
+        if (!file_exists($this->getPath())) {
+            return true;
+        }
         return unlink($this->getPath());
     }
 
