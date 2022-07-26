@@ -2,8 +2,8 @@
 
 namespace Tapat4n\Fork;
 
+use Tapat4n\Fork\Message\FileMessage;
 use Tapat4n\Fork\Message\MessageInterface;
-use Tapat4n\Fork\Message\ShmopMessage;
 use RuntimeException;
 
 final class Fork
@@ -21,7 +21,7 @@ final class Fork
 
     public function __construct(
         bool $waitAfterRun = true,
-        string $messageClass = ShmopMessage::class
+        string $messageClass = FileMessage::class
     ) {
         if (!extension_loaded('pcntl')) {
             throw new RuntimeException('Exctension `pcntl` not loaded in php.ini');
