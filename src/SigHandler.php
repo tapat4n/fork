@@ -4,13 +4,6 @@ namespace Tapat4n\Fork;
 
 use RuntimeException;
 
-/**
- * SIGTERM - handle shutdown tasks
- * SIGHUP - handle restart tasks
- * SIGUSR2 - handle cancel tasks (ctrl + c)
- * SIGTSTP - handle stop tasks (ctrl + z)
- * SIGUSR1
- */
 final class SigHandler
 {
     private array $handlers = [];
@@ -45,9 +38,9 @@ final class SigHandler
         }
     }
 
-    private function register(int $signal): bool
+    private function register(int $signal): void
     {
-        return pcntl_signal($signal, $this);
+        pcntl_signal($signal, $this);
     }
 
     private function handle(int $signal): void
