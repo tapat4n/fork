@@ -9,6 +9,8 @@ use Tapat4n\Fork\Worker\WorkerInterface;
 
 final class Fork
 {
+    private const LIMIT = 10;
+
     private bool $isParent = true;
 
     /**
@@ -20,13 +22,17 @@ final class Fork
 
     private bool $waitAfterRun;
 
+    private int $fork_limit;
+
     public function __construct(
+        int $fork_limit = self::LIMIT,
         bool $waitAfterRun = true,
         string $messageClass = FileMessage::class
     ) {
         if (!extension_loaded('pcntl')) {
             throw new RuntimeException('Exctension `pcntl` not loaded in php.ini');
         }
+        $this->fork_limit = $fork_limit;
         $this->messageClass = $messageClass;
         $this->waitAfterRun = $waitAfterRun;
     }
@@ -80,17 +86,19 @@ final class Fork
 
     public function dispatch(): void
     {
-        foreach ($this->processes as $process) {
-            $process->run();
-        }
-        if ($this->waitAfterRun) {
-            $this->wait();
+        foreach (array_chunk($this->processes, $this->fork_limit, true) as $processes) {
+            foreach ($processes as $process) {
+                $process->run();
+            }
+            if ($this->waitAfterRun) {
+                $this->wait($processes);
+            }
         }
     }
 
-    public function wait(): void
+    private function wait(array $processes): void
     {
-        foreach ($this->processes as $process) {
+        foreach ($processes as $process) {
             $process->wait();
         }
     }
