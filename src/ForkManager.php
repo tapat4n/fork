@@ -94,7 +94,9 @@ final class ForkManager
             $fork->run();
         }
         foreach ($this->forks as $fork) {
-            $fork->wait();
+            if ($fork->isRunned()) {
+                $fork->wait();
+            }
         }
     }
 

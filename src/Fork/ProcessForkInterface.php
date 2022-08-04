@@ -16,6 +16,8 @@ interface ProcessForkInterface
 
     public function getPid(): ?int;
 
+    public function isRunned(): bool;
+
     public function isRunning(): bool;
 
     public function isSuccessful(): bool;

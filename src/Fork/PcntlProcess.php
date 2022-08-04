@@ -47,7 +47,7 @@ final class PcntlProcess implements ProcessForkInterface
         return $this->pid;
     }
 
-    public function isRunning(): bool
+    public function isRunned(): bool
     {
         if ($this->getPid() === null) {
             return false;
@@ -67,7 +67,7 @@ final class PcntlProcess implements ProcessForkInterface
 
     public function run(): void
     {
-        if ($this->isRunning()) {
+        if ($this->isRunned()) {
             throw new ProcessException("Can't fork process. Already forked");
         }
         $this->pid = pcntl_fork();
@@ -109,7 +109,7 @@ final class PcntlProcess implements ProcessForkInterface
 
     public function wait(): void
     {
-        if ($this->isRunning()) {
+        if ($this->isRunned()) {
             pcntl_waitpid($this->getPid(), $this->status, WUNTRACED);
             $this->is_running = false;
         }
@@ -124,5 +124,10 @@ final class PcntlProcess implements ProcessForkInterface
     {
         $this->message->remove();
         $this->outputMessage->remove();
+    }
+
+    public function isRunning(): bool
+    {
+        return file_exists('/proc/' . $this->getPid());
     }
 }
