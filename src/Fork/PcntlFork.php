@@ -3,8 +3,8 @@
 namespace Tapat4n\Fork\Fork;
 
 use RuntimeException;
-use Tapat4n\Fork\Message\FileMessage;
 use Tapat4n\Fork\Message\MessageInterface;
+use Tapat4n\Fork\Message\ShmopMessage;
 use Tapat4n\Fork\Process;
 use Tapat4n\Fork\Worker\WorkerInterface;
 
@@ -26,7 +26,7 @@ final class PcntlFork implements ForkInterface
     public function __construct(
         int $fork_limit = self::DEFAULT_LIMIT,
         bool $waitAfterRun = true,
-        string $messageClass = FileMessage::class
+        string $messageClass = ShmopMessage::class
     ) {
         if (!extension_loaded('pcntl')) {
             throw new RuntimeException('Exctension `pcntl` not loaded in php.ini');
