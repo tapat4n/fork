@@ -32,7 +32,7 @@ final class ShmopHandler implements HandlerInterface
     public function __construct(int $key, int $size, int $perms = self::DEFAULT_PERMISSION)
     {
         if (!extension_loaded('shmop')) {
-            throw new RuntimeException('Exctension `shmop` not loaded in php.ini');
+            throw new RuntimeException('Extension `shmop` not loaded in php.ini');
         }
         if ($this->handlerOpened($key)) {
             $mode = self::SHARED_MEMORY_READ_WRITE;
@@ -47,7 +47,7 @@ final class ShmopHandler implements HandlerInterface
 
     public function handlerOpened(int $key): bool
     {
-        return (bool)shmop_open($key, self::SHARED_MEMORY_READONLY, 0, 0);
+        return (bool)@shmop_open($key, self::SHARED_MEMORY_READONLY, 0, 0);
     }
 
     public function write($data): bool

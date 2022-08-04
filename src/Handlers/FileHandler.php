@@ -9,7 +9,6 @@ use function fseek;
 use function fclose;
 use function unlink;
 use function sys_get_temp_dir;
-use function is_resource;
 use function filesize;
 use function strlen;
 
@@ -46,10 +45,10 @@ final class FileHandler implements HandlerInterface
 
     public function read(): string
     {
-        $fsize = filesize($this->getPath());
+        $fsize = @filesize($this->getPath());
         if ($fsize > 0) {
             fseek($this->stream, 0);
-            return fread($this->stream, $fsize);
+            return fread($this->stream, $this->size);
         }
         return '';
     }
