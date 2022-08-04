@@ -13,4 +13,12 @@ final class KeyGenerator
     {
         return random_int(0, PHP_INT_MAX);
     }
+
+    /**
+     * @throws Exception
+     */
+    public function generateId(): string
+    {
+        return uniqid($this->generate(), true);
+    }
 }
