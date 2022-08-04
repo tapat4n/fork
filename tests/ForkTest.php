@@ -1,13 +1,14 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Tapat4n\Fork\Fork\PcntlFork as Fork;
 use Tapat4n\Fork\Message\MessageInterface;
 
 class ForkTest extends TestCase
 {
     public function testAddWorker(): void
     {
-        $fork = new Tapat4n\Fork\Fork();
+        $fork = new Fork();
         $ref = new ReflectionClass($fork);
         $this->assertTrue($ref->hasProperty('processes'));
         $processes = $ref->getProperty('processes');
@@ -22,7 +23,7 @@ class ForkTest extends TestCase
 
     public function testRun(): void
     {
-        $fork = new Tapat4n\Fork\Fork();
+        $fork = new Fork();
         $fork->addWorker(function (MessageInterface $message) {
             $message->set('run1');
             echo 'echo1';
@@ -39,9 +40,9 @@ class ForkTest extends TestCase
 
     public function testForkFork(): void
     {
-        $main_fork = new Tapat4n\Fork\Fork();
+        $main_fork = new Fork();
         $main_fork->addWorker(function (MessageInterface $message) {
-            $sub_fork_1 = new Tapat4n\Fork\Fork();
+            $sub_fork_1 = new Fork();
             $sub_fork_1->addWorker(function (MessageInterface $message) {
                 $message->set('sub_fork_1_1');
             });
@@ -52,7 +53,7 @@ class ForkTest extends TestCase
             $message->set('main_fork_1|' . implode('|', $sub_fork_1->getMessages()));
         });
         $main_fork->addWorker(function (MessageInterface $message) {
-            $sub_fork_2 = new Tapat4n\Fork\Fork();
+            $sub_fork_2 = new Fork();
             $sub_fork_2->addWorker(function (MessageInterface $message) {
                 $message->set('sub_fork_2_1');
             });
@@ -75,7 +76,7 @@ class ForkTest extends TestCase
 
     public function testLimit(): void
     {
-        $fork = new Tapat4n\Fork\Fork(1);
+        $fork = new Fork(1);
         $fork->addWorker(function (MessageInterface $message) {
             $message->set('run1');
             echo 'echo1';

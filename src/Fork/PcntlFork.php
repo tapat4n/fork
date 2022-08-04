@@ -1,16 +1,15 @@
 <?php
 
-namespace Tapat4n\Fork;
+namespace Tapat4n\Fork\Fork;
 
+use RuntimeException;
 use Tapat4n\Fork\Message\FileMessage;
 use Tapat4n\Fork\Message\MessageInterface;
-use RuntimeException;
+use Tapat4n\Fork\Process;
 use Tapat4n\Fork\Worker\WorkerInterface;
 
-final class Fork
+final class PcntlFork implements ForkInterface
 {
-    private const LIMIT = 10;
-
     private bool $isParent = true;
 
     /**
@@ -25,7 +24,7 @@ final class Fork
     private int $fork_limit;
 
     public function __construct(
-        int $fork_limit = self::LIMIT,
+        int $fork_limit = self::DEFAULT_LIMIT,
         bool $waitAfterRun = true,
         string $messageClass = FileMessage::class
     ) {
