@@ -72,4 +72,21 @@ class ForkTest extends TestCase
             array_values($main_fork->getMessages())
         );
     }
+
+    public function testLimit(): void
+    {
+        $fork = new Tapat4n\Fork\Fork(1);
+        $fork->addWorker(function (MessageInterface $message) {
+            $message->set('run1');
+            echo 'echo1';
+        });
+        $fork->addWorker(function (MessageInterface $message) {
+            $message->set('run2');
+            echo 'echo2';
+        });
+        $fork->dispatch();
+        $this->assertCount(2, $fork->getMessages());
+        $this->assertSame(['run1', 'run2'], array_values($fork->getMessages()));
+        $this->assertSame(['echo1', 'echo2'], array_values($fork->getOutput()));
+    }
 }

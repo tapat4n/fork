@@ -12,15 +12,12 @@ final class ShmopMessage implements MessageInterface
 
     private ShmopHandler $handler;
 
-    private int $key;
-
     /**
      * @throws Exception
      */
-    public function __construct()
+    public function __construct($message_size = self::SIZE)
     {
-        $this->key = (new KeyGenerator())->generate();
-        $this->handler = new ShmopHandler($this->key, self::SIZE);
+        $this->handler = new ShmopHandler((new KeyGenerator())->generate(), $message_size);
     }
 
     public function set(string $msg): bool

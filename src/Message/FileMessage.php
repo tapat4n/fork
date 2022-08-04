@@ -5,18 +5,18 @@ namespace Tapat4n\Fork\Message;
 use Tapat4n\Fork\Handlers\FileHandler;
 use Tapat4n\Fork\KeyGenerator;
 
-class FileMessage implements MessageInterface
+final class FileMessage implements MessageInterface
 {
     public const SIZE = 1024;
 
     private FileHandler $handler;
 
-    private int $key;
-
-    public function __construct()
+    /**
+     * @throws \Exception
+     */
+    public function __construct($message_size = self::SIZE)
     {
-        $this->key = (new KeyGenerator())->generate();
-        $this->handler = new FileHandler($this->key, self::SIZE);
+        $this->handler = new FileHandler((new KeyGenerator())->generate(), $message_size);
     }
 
     public function set(string $msg): bool
