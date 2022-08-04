@@ -8,7 +8,7 @@ use Tapat4n\Fork\KeyGenerator;
 
 final class ShmopMessage implements MessageInterface
 {
-    public const SIZE = 1024;
+    public const SIZE = 2048;
 
     private ShmopHandler $handler;
 
