@@ -78,6 +78,7 @@ final class PcntlProcess implements ProcessForkInterface
             call_user_func($this->on_forked, $this);
         }
         if ($this->getPid() === self::SUB_PID) {
+//            posix_setsid(); // detach process
             if (is_resource(STDIN)) {
                 fclose(STDIN);
             }
