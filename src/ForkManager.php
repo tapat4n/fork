@@ -109,12 +109,22 @@ final class ForkManager
         return $this->messages;
     }
 
+    public function getMessagesContent(): array
+    {
+        return array_map(fn(MessageInterface $message) => $message->get(), $this->getMessages());
+    }
+
     /**
      * @return MessageInterface[]
      */
     public function getOutputMessages(): array
     {
         return $this->output_messages;
+    }
+
+    public function getOutputMessagesContent(): array
+    {
+        return array_map(fn(MessageInterface $message) => $message->get(), $this->getOutputMessages());
     }
 
     /**

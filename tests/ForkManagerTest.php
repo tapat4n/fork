@@ -1,17 +1,17 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Tapat4n\Fork\Fork\PcntlFork as Fork;
+use Tapat4n\Fork\ForkManager;
 use Tapat4n\Fork\Message\MessageInterface;
 
-class ForkTest extends TestCase
+class ForkManagerTest extends TestCase
 {
     public function testAddWorker(): void
     {
-        $fork = new Fork();
+        $fork = new ForkManager();
         $ref = new ReflectionClass($fork);
-        $this->assertTrue($ref->hasProperty('processes'));
-        $processes = $ref->getProperty('processes');
+        $this->assertTrue($ref->hasProperty('forks'));
+        $processes = $ref->getProperty('forks');
         $processes->setAccessible(true);
         $this->assertCount(0, $processes->getValue($fork));
 
@@ -23,7 +23,7 @@ class ForkTest extends TestCase
 
     public function testRun(): void
     {
-        $fork = new Fork();
+        $fork = new ForkManager();
         $fork->addWorker(function (MessageInterface $message) {
             $message->set('run1');
             echo 'echo1';
@@ -34,15 +34,15 @@ class ForkTest extends TestCase
         });
         $fork->dispatch();
         $this->assertCount(2, $fork->getMessages());
-        $this->assertSame(['run1', 'run2'], array_values($fork->getMessages()));
-        $this->assertSame(['echo1', 'echo2'], array_values($fork->getOutput()));
+        $this->assertSame(['run1', 'run2'], array_values($fork->getMessagesContent()));
+        $this->assertSame(['echo1', 'echo2'], array_values($fork->getOutputMessagesContent()));
     }
 
     public function testForkFork(): void
     {
-        $main_fork = new Fork();
+        $main_fork = new ForkManager();
         $main_fork->addWorker(function (MessageInterface $message) {
-            $sub_fork_1 = new Fork();
+            $sub_fork_1 = new ForkManager();
             $sub_fork_1->addWorker(function (MessageInterface $message) {
                 $message->set('sub_fork_1_1');
             });
@@ -50,10 +50,10 @@ class ForkTest extends TestCase
                 $message->set('sub_fork_1_2');
             });
             $sub_fork_1->dispatch();
-            $message->set('main_fork_1|' . implode('|', $sub_fork_1->getMessages()));
+            $message->set('main_fork_1|' . implode('|', $sub_fork_1->getMessagesContent()));
         });
         $main_fork->addWorker(function (MessageInterface $message) {
-            $sub_fork_2 = new Fork();
+            $sub_fork_2 = new ForkManager();
             $sub_fork_2->addWorker(function (MessageInterface $message) {
                 $message->set('sub_fork_2_1');
             });
@@ -61,7 +61,7 @@ class ForkTest extends TestCase
                 $message->set('sub_fork_2_2');
             });
             $sub_fork_2->dispatch();
-            $message->set('main_fork_2|' . implode('|', $sub_fork_2->getMessages()));
+            $message->set('main_fork_2|' . implode('|', $sub_fork_2->getMessagesContent()));
         });
         $main_fork->dispatch();
         $this->assertCount(2, $main_fork->getMessages());
@@ -70,13 +70,13 @@ class ForkTest extends TestCase
                 'main_fork_1|sub_fork_1_1|sub_fork_1_2',
                 'main_fork_2|sub_fork_2_1|sub_fork_2_2'
             ],
-            array_values($main_fork->getMessages())
+            array_values($main_fork->getMessagesContent())
         );
     }
 
     public function testLimit(): void
     {
-        $fork = new Fork(1);
+        $fork = new ForkManager();
         $fork->addWorker(function (MessageInterface $message) {
             $message->set('run1');
             echo 'echo1';
@@ -87,7 +87,7 @@ class ForkTest extends TestCase
         });
         $fork->dispatch();
         $this->assertCount(2, $fork->getMessages());
-        $this->assertSame(['run1', 'run2'], array_values($fork->getMessages()));
-        $this->assertSame(['echo1', 'echo2'], array_values($fork->getOutput()));
+        $this->assertSame(['run1', 'run2'], array_values($fork->getMessagesContent()));
+        $this->assertSame(['echo1', 'echo2'], array_values($fork->getOutputMessagesContent()));
     }
 }
