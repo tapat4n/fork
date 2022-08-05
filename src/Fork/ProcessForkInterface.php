@@ -26,6 +26,10 @@ interface ProcessForkInterface
 
     public function isParent(): bool;
 
+    public function isDetached(): bool;
+
+    public function makeDetached(): void;
+
     public function run(): void;
 
     public function wait(): void;

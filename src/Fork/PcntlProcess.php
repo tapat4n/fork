@@ -6,6 +6,24 @@ use Tapat4n\Fork\Message\MessageInterface;
 use Tapat4n\Fork\Worker\WorkerInterface;
 use Throwable;
 
+use const STDIN;
+use const STDOUT;
+use const STDERR;
+use const WUNTRACED;
+
+use function pcntl_fork;
+use function pcntl_waitpid;
+use function posix_setsid;
+use function call_user_func;
+use function json_encode;
+use function file_exists;
+use function is_resource;
+use function fclose;
+use function ob_start;
+use function ob_get_contents;
+use function ob_clean;
+use function register_shutdown_function;
+
 final class PcntlProcess implements ProcessForkInterface
 {
     private const SUCCESS_STATUS = 0;
@@ -17,6 +35,8 @@ final class PcntlProcess implements ProcessForkInterface
     private ?int $status = null;
 
     private bool $is_running = false;
+
+    private bool $is_detached = false;
 
     private WorkerInterface $worker;
 
@@ -77,22 +97,10 @@ final class PcntlProcess implements ProcessForkInterface
         if ($this->on_forked) {
             call_user_func($this->on_forked, $this);
         }
-        if ($this->getPid() === self::SUB_PID) {
-//            posix_setsid(); // detach process
-            if (is_resource(STDIN)) {
-                fclose(STDIN);
-            }
-            if (is_resource(STDOUT)) {
-                fclose(STDOUT);
-            }
-            if (is_resource(STDERR)) {
-                fclose(STDERR);
-            }
-            ob_start();
-            register_shutdown_function(function () {
-                $this->outputMessage->set(ob_get_contents());
-                ob_clean();
-            });
+        if ($this->isSub()) {
+            $this->detach();
+            $this->closeOutput();
+            $this->wrapOutput();
             try {
                 $this->worker->run($this->message);
                 exit(0);
@@ -130,5 +138,49 @@ final class PcntlProcess implements ProcessForkInterface
     public function isRunning(): bool
     {
         return file_exists('/proc/' . $this->getPid());
+    }
+
+    public function isDetached(): bool
+    {
+        return $this->is_detached;
+    }
+
+    public function makeDetached(): void
+    {
+        $this->is_detached = true;
+    }
+
+    private function detach(): void
+    {
+        if ($this->isDetached()) {
+            posix_setsid();
+        }
+    }
+
+    private function closeOutput(): void
+    {
+        if ($this->isSub()) {
+            $resources = [
+                STDIN,
+                STDOUT,
+                STDERR,
+            ];
+            foreach ($resources as $resource) {
+                if (is_resource($resource)) {
+                    fclose($resource);
+                }
+            }
+        }
+    }
+
+    private function wrapOutput(): void
+    {
+        if ($this->isSub()) {
+            ob_start();
+            register_shutdown_function(function () {
+                $this->outputMessage->set(ob_get_contents());
+                ob_clean();
+            });
+        }
     }
 }
