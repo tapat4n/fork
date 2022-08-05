@@ -65,9 +65,9 @@ final class ForkManager
     /**
      * @throws Exception
      */
-    public function addWorker(WorkerInterface|Closure $worker): void
+    public function addWorker(WorkerInterface|Closure $worker, bool $detached = false): void
     {
-        if (is_callable($worker)) {
+        if ($worker instanceof Closure) {
             $this->validateClosure($worker);
             $worker = new CallbackWorker($worker);
         }
@@ -84,7 +84,8 @@ final class ForkManager
                 if ($fork->isSub()) {
                     $this->isParent = false;
                 }
-            }
+            },
+            $detached
         );
     }
 
@@ -146,6 +147,7 @@ final class ForkManager
         MessageInterface $message,
         MessageInterface $outputMessage,
         callable|null    $on_forked = null,
+        bool $detached,
     ): ProcessForkInterface
     {
         if (!class_exists($this->forkClass)) {
@@ -159,6 +161,9 @@ final class ForkManager
         );
         if (!$fork instanceof ProcessForkInterface) {
             throw new RuntimeException('Property $forkClass must be instance of ' . ProcessForkInterface::class);
+        }
+        if ($detached) {
+            $fork->makeDetached();
         }
         return $fork;
     }
