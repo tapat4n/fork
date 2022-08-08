@@ -5,7 +5,7 @@
 PHP library for forking process and multitasking
 
 - [Installation](#installation)
-- [Example usage](#example)
+- [Example usage](#example-usage)
 
 ## Installation
 PHP 8.1 is required
