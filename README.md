@@ -1,9 +1,10 @@
 # Fork manager
-[![Latest Stable Version](http://poser.pugx.org/tapat4n/fork/v?style=for-the-badge)](https://packagist.org/packages/tapat4n/fork)
-[![Total Downloads](http://poser.pugx.org/tapat4n/fork/downloads?style=for-the-badge)](https://packagist.org/packages/tapat4n/fork)
-[![Latest Unstable Version](http://poser.pugx.org/tapat4n/fork/v/unstable?style=for-the-badge)](https://packagist.org/packages/tapat4n/fork)
-[![License](http://poser.pugx.org/tapat4n/fork/license?style=for-the-badge)](https://packagist.org/packages/tapat4n/fork)
-[![PHP Version Require](http://poser.pugx.org/tapat4n/fork/require/php?style=for-the-badge)](https://packagist.org/packages/tapat4n/fork)
+[![Latest Stable Version](http://poser.pugx.org/tapat4n/fork/v)](https://packagist.org/packages/tapat4n/fork)
+[![Total Downloads](http://poser.pugx.org/tapat4n/fork/downloads)](https://packagist.org/packages/tapat4n/fork)
+[![Latest Unstable Version](http://poser.pugx.org/tapat4n/fork/v/unstable)](https://packagist.org/packages/tapat4n/fork)
+[![License](http://poser.pugx.org/tapat4n/fork/license)](https://packagist.org/packages/tapat4n/fork)
+[![PHP Version Require](http://poser.pugx.org/tapat4n/fork/require/php)](https://packagist.org/packages/tapat4n/fork)
+[![Build Status](https://travis-ci.org/tapat4n/fork.svg?branch=master)](https://travis-ci.org/tapat4n/fork)
 
 ## What is it?
 
