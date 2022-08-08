@@ -27,11 +27,11 @@
   "prefer-stable": true,
   "require": {
     "php": ">=8.1",
-    "ext-posix": "*"
+    "ext-posix": "Required for posix support",
+    "ext-pcntl": "Required for pcntl support"
   },
   "suggest": {
-    "ext-shmop": "Required for shmop handler support",
-    "ext-pcntl": "Required for pcntl support"
+    "ext-shmop": "Required for shmop handler support"
   },
   "require-dev": {
     "vimeo/psalm": "*",
