@@ -156,7 +156,7 @@ final class ForkManager
         WorkerInterface  $worker,
         MessageInterface $message,
         MessageInterface $outputMessage,
-        callable|null    $on_forked = null,
+        callable|null    $on_forked,
         bool $detached,
     ): ProcessForkInterface
     {
