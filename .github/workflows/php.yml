@@ -34,7 +34,7 @@ jobs:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
-  
+
     strategy:
       matrix:
         os: ${{ fromJson(inputs.os) }}
